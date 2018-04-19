@@ -1,0 +1,81 @@
+---
+title: "Actividad 6"
+author: "Marìa Noel Blanco"
+date: "12 de abril de 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+install.packages("tidyverse")
+library(tidyverse)
+
+##Ejercicio 2
+
+Cargar la librería `tidyverse` y con los datos `mpg` usar las funciones que vimos de `dplyr` para  transformar los datos de la siguiente forma. 
+
+1. Seleccionar el conjunto de autos del 2008 que tienen `hwy` mayor a 31. ¿Cuantos autos son? 
+Son 6 autos
+
+filter(mpg,year==2008 & hwy>31)
+
+2. Seleccionar el conjutno de autos que tienen `cty` igual a 9 ó hwy es mayor a 90. ¿Cuantos autos son? 
+Son 5 autos
+
+filter(mpg, cty==9 | hwy>90)
+
+3. Selecciona la variable `displ` y `hwy`
+
+select(mpg, c(displ,hwy))
+
+4. Seleccioná desde la variable `trans` hasta la variable `hwy`
+
+select(mpg, trans:hwy)
+
+5. Crear una nueva variable que transforme  `hwy` (millas por galón) en litros/100 km 
+Primero tenés que saber la conversión de galones a litros y de millas a kilómetros
+
+`1 gallón = 3.78541 litros`
+
+`1 milla = 1.60934 km`
+
+`1 milla por galón = (3.78541/1.60934)*100 = 235.215 lit100km`
+
+
+mutate(mpg, lit100km = hwy*235.215)
+
+
+##Ejercicio 3
+
+Para esta actividad vamos a utilizar los datos happy que se encuentran en la librería productplots. Con
+estos datos vamos a investigar algunas preguntas sobre que cosas afectan la felicidad de la gente. Para
+responder estas preguntas utilizaremos dplyr.
+
+1. Encontrá el porcentaje para los distintos niveles de felicidad para hombres y mujeres a lo largo de todos los años
+
+install.packages("productplots")
+library(productplots)
+
+happy%>%
+group_by(happy, year, sex)%>%
+summarise(conteo=n())%>%
+mutate(porcent_happy= (conteo/sum(conteo))*100)
+
+
+2. Graficá los porcentajes en un gráfico de dispersión con year en el eje x y porcentaje en el eje y. Tendría que haber un total de seis puntos para cada año, coloreálos puntos según happy y remove la clase NA usando filter
+
+happy%>%
+filter(!is.na(happy))%>%
+group_by(happy, year, sex)%>%
+summarise(conteo=n())%>%
+mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
+ggplot(aes(year, porcent_happy, colour=happy))+
+geom_point()
+
+
+3. ¿Cómo se ve afectada la felicidad según el género?
+4. ¿Cómo se ve afectada la felicidad según el edad? ¿Existe una diferencia entre hombres y mujeres?
+5. ¿Y si analizamos por estado civil y situación financiera que encontramos?
+6. En relacion a la variable educación que se puede ver
+
