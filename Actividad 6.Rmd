@@ -75,7 +75,57 @@ geom_point()
 
 
 3. ¿Cómo se ve afectada la felicidad según el género?
+
+happy%>%
+filter(!is.na(happy))%>%
+group_by(happy, year, sex)%>%
+summarise(conteo=n())%>%
+mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
+ggplot(aes(sex, porcent_happy))+
+geom_point()+
+facet_wrap(~sex)
+
+
+
 4. ¿Cómo se ve afectada la felicidad según el edad? ¿Existe una diferencia entre hombres y mujeres?
+
+happy%>%
+filter(!is.na(happy))%>%
+group_by(happy, age, sex)%>%
+summarise(conteo=n())%>%
+mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
+ggplot(aes(age, porcent_happy))+
+geom_point()+
+facet_wrap(~sex)
+
 5. ¿Y si analizamos por estado civil y situación financiera que encontramos?
+
+happy%>%
+filter(!is.na(marital))%>%
+group_by(happy, marital, sex)%>%
+summarise(conteo=n())%>%
+mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
+ggplot(aes(marital, porcent_happy))+
+geom_point()+
+facet_wrap(~sex)
+
+happy%>%
+filter(!is.na(finrela))%>%
+group_by(happy, finrela, sex)%>%
+summarise(conteo=n())%>%
+mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
+ggplot(aes(finrela, porcent_happy))+
+geom_point()+
+facet_wrap(~sex)
+
 6. En relacion a la variable educación que se puede ver
+
+happy%>%
+filter(!is.na(degree))%>%
+group_by(happy, degree, sex)%>%
+summarise(conteo=n())%>%
+mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
+ggplot(aes(degree, porcent_happy))+
+geom_point()+
+facet_wrap(~sex)
 
