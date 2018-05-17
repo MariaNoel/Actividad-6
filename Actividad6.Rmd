@@ -2,14 +2,22 @@
 title: "Actividad 6"
 author: "Marìa Noel Blanco"
 date: "12 de abril de 2018"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-install.packages("tidyverse")
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
 library(tidyverse)
+```
+
+
+<span style="color:green">
+No es necesario instalar los paquetes cada vez, una vez instalados para usarlos alcanza con library(tidyverse)
+para que no salgan los mensajes hay que agregar en el chuynk warning=FALSE,message=FALSE
+</span>
+
 
 ##Ejercicio 2
 
@@ -18,22 +26,44 @@ Cargar la librería `tidyverse` y con los datos `mpg` usar las funciones que vim
 1. Seleccionar el conjunto de autos del 2008 que tienen `hwy` mayor a 31. ¿Cuantos autos son? 
 Son 6 autos
 
+
+```{r}
+
 filter(mpg,year==2008 & hwy>31)
+```
+
+<span style="color:green">
+Bien
+</span>
 
 2. Seleccionar el conjutno de autos que tienen `cty` igual a 9 ó hwy es mayor a 90. ¿Cuantos autos son? 
 Son 5 autos
-
+```{r}
 filter(mpg, cty==9 | hwy>90)
+```
+
+<span style="color:green">
+Bien
+</span>
 
 3. Selecciona la variable `displ` y `hwy`
-
+```{r}
 select(mpg, c(displ,hwy))
+```
+<span style="color:green">
+Bien
+</span>
 
 4. Seleccioná desde la variable `trans` hasta la variable `hwy`
-
+```{r}
 select(mpg, trans:hwy)
+```
 
-5. Crear una nueva variable que transforme  `hwy` (millas por galón) en litros/100 km 
+<span style="color:green">
+Bien
+</span>
+
+5. Crear una nueva variable que transforme  `hwy` (millas por galón) en litros/100 km
 Primero tenés que saber la conversión de galones a litros y de millas a kilómetros
 
 `1 gallón = 3.78541 litros`
@@ -42,8 +72,15 @@ Primero tenés que saber la conversión de galones a litros y de millas a kilóm
 
 `1 milla por galón = (3.78541/1.60934)*100 = 235.215 lit100km`
 
-
+```{r}
 mutate(mpg, lit100km = hwy*235.215)
+```
+
+<span style="color:green">
+los valores de tu nueva variables son my altos para rendimiento en km por litro, es de utilidad mirar un summary de la nueva variable para darte cuenta si lo que calculaste es correcto.
+Lo que hay que hacer es:
+mpg %>% mutate(hwylkm = (3.78541/1.60934)*100/hwy)
+</span>
 
 
 ##Ejercicio 3
@@ -53,18 +90,23 @@ estos datos vamos a investigar algunas preguntas sobre que cosas afectan la feli
 responder estas preguntas utilizaremos dplyr.
 
 1. Encontrá el porcentaje para los distintos niveles de felicidad para hombres y mujeres a lo largo de todos los años
-
-install.packages("productplots")
+```{r}
 library(productplots)
-
 happy%>%
 group_by(happy, year, sex)%>%
 summarise(conteo=n())%>%
 mutate(porcent_happy= (conteo/sum(conteo))*100)
+```
+
+
+<span style="color:green">
+Ver sol para entender como funciona group_by y summarise, donde suma 100% tu resumen?
+</span>
 
 
 2. Graficá los porcentajes en un gráfico de dispersión con year en el eje x y porcentaje en el eje y. Tendría que haber un total de seis puntos para cada año, coloreálos puntos según happy y remove la clase NA usando filter
 
+```{r}
 happy%>%
 filter(!is.na(happy))%>%
 group_by(happy, year, sex)%>%
@@ -72,10 +114,17 @@ summarise(conteo=n())%>%
 mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
 ggplot(aes(year, porcent_happy, colour=happy))+
 geom_point()
+```
+
+
+<span style="color:green">
+Bien, arreglar las etiquetas en los ejes
+</span>
 
 
 3. ¿Cómo se ve afectada la felicidad según el género?
 
+```{r}
 happy%>%
 filter(!is.na(happy))%>%
 group_by(happy, year, sex)%>%
@@ -84,10 +133,17 @@ mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
 ggplot(aes(sex, porcent_happy))+
 geom_point()+
 facet_wrap(~sex)
+```
 
+
+<span style="color:green">
+Este plot no responde la pregunta, qué representan tus porcentajes? donde están los niveles de felicidad?
+Ver solución
+</span>
 
 
 4. ¿Cómo se ve afectada la felicidad según el edad? ¿Existe una diferencia entre hombres y mujeres?
+```{r}
 
 happy%>%
 filter(!is.na(happy))%>%
@@ -97,9 +153,15 @@ mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
 ggplot(aes(age, porcent_happy))+
 geom_point()+
 facet_wrap(~sex)
+```
+
+<span style="color:green">
+Este plot no responde la pregunta, qué representan tus porcentajes? donde están los niveles de felicidad?
+Ver solución
+</span>
 
 5. ¿Y si analizamos por estado civil y situación financiera que encontramos?
-
+```{r}
 happy%>%
 filter(!is.na(marital))%>%
 group_by(happy, marital, sex)%>%
@@ -108,7 +170,9 @@ mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
 ggplot(aes(marital, porcent_happy))+
 geom_point()+
 facet_wrap(~sex)
+```
 
+```{r}
 happy%>%
 filter(!is.na(finrela))%>%
 group_by(happy, finrela, sex)%>%
@@ -117,9 +181,19 @@ mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
 ggplot(aes(finrela, porcent_happy))+
 geom_point()+
 facet_wrap(~sex)
+```
+
+
+<span style="color:green">
+Este plot no responde la pregunta, qué representan tus porcentajes? donde están los niveles de felicidad?
+Ver solución
+</span>
+
 
 6. En relacion a la variable educación que se puede ver
 
+
+```{r}
 happy%>%
 filter(!is.na(degree))%>%
 group_by(happy, degree, sex)%>%
@@ -128,4 +202,17 @@ mutate(porcent_happy= (conteo/sum(conteo))*100)%>%
 ggplot(aes(degree, porcent_happy))+
 geom_point()+
 facet_wrap(~sex)
+```
 
+<span style="color:green">
+Mirá la solución para entender algunas opciones para responder las preguntas planteadas para la exploración de happy
+</span>
+
+
+
+<span style="color:green">
+Inluir chucks de código, no instalar los paquetes en el documento.
+Practicar responder preguntas y mirar los resultados de agregar y resumir informacion, donde se suma el 100% tiene que tener sentido para lo que queremos responder.
+PUNTOS:6/10
+
+</span>
